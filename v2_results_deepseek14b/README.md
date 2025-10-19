@@ -1,0 +1,5 @@
+- Uses deepseek-r1:14b
+- Observations: Takes lot of thinking time cannot skip it, feature built into the mode.
+- Answers are quite long but interesting and is able to keep up. 
+- Needs more testing
+- Response output in pictures
