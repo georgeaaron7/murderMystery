@@ -1,0 +1,24 @@
+/* Component-level accents for the detective UI */
+.suspect-item:focus-visible { outline: none; box-shadow: var(--ring), var(--glow-red); transform: translateY(-1px); }
+.send-btn:focus-visible { outline: none; box-shadow: var(--ring), var(--glow-red); }
+.input-box:focus-within { box-shadow: var(--ring), inset 0 1px 0 rgba(255,255,255,0.06); border-color: rgba(217,4,41,0.5); }
+
+/* Subtle header motif resembling a murder board */
+.chat-header {
+  position: relative;
+}
+.chat-header::after {
+  content: "";
+  position: absolute; inset: auto 1.25rem 0.6rem 1.25rem; height: 10px;
+  background:
+    linear-gradient(90deg, transparent, rgba(217,4,41,0.65) 10%, transparent 20%, transparent 60%, rgba(255,255,255,0.35) 70%, transparent 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.06) 1px, transparent 1px, transparent 6px);
+  mask-image: radial-gradient(8px 8px at left, black, transparent), radial-gradient(8px 8px at right, black, transparent);
+  mask-composite: exclude;
+  opacity: 0.35;
+}
+
+/* Scrollbar styling for mood */
+.suspects::-webkit-scrollbar, .chat-window::-webkit-scrollbar { width: 10px; }
+.suspects::-webkit-scrollbar-thumb, .chat-window::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
+.suspects::-webkit-scrollbar-thumb:hover, .chat-window::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }

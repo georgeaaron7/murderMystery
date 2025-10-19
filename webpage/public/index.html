@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Murder Mystery Chat</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+      #history { border: 1px solid #ccc; padding: 10px; height: 300px; overflow: auto; background:#fafafa }
+      .msg { margin: 6px 0 }
+      .sender { font-weight: bold }
+      #controls { margin-top: 10px }
+    </style>
+  </head>
+  <body>
+    <h1>Murder Mystery Chat</h1>
+
+  <label>Participant ID: <input id="participantId" value="participant1"></label>
+  <label>Choose suspect: <select id="suspectId"></select></label>
+
+    <div id="history"></div>
+
+    <div id="controls">
+      <input id="message" placeholder="Type your message" style="width:70%" />
+      <button id="send" disabled>Send</button>
+      <button id="load">Load history</button>
+      <div id="error" style="color:crimson; margin-top:8px"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/main.js"></script>
+  </body>
+</html>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Murder Mystery Chat Tester</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow:auto; }
+    .msg { margin: 6px 0; }
+    .sender { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Murder Mystery Chat Tester</h1>
+  <label>Participant ID: <input id="participantId" value="participant1" /></label>
+  <label>Suspect ID: <input id="suspectId" value="suspectA" /></label>
+  <div>
+    <button id="load">Load History</button>
+  </div>
+  <div id="chat"></div>
+  <div>
+    <input id="message" placeholder="Type a message..." style="width:70%" />
+    <button id="send">Send</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/main.js"></script>
+</body>
+</html>
