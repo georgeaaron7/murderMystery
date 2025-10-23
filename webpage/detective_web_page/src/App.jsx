@@ -9,10 +9,11 @@ import ChatWindow from './components/ChatWindow'
 
 // Local fallback suspects in case backend is down
 const FALLBACK_SUSPECTS = [
-  { id: 'suspectA', name: 'Mr. Black', role: 'Unknown', avatar: silhouette },
-  { id: 'suspectB', name: 'Ms. Scarlet', role: 'Unknown', avatar: silhouette },
-  { id: 'suspectC', name: 'Prof. Plum', role: 'Unknown', avatar: silhouette },
-  { id: 'suspectD', name: 'Colonel Mustard', role: 'Unknown', avatar: silhouette },
+  { id: 'suspectA', name: 'Aaron', role: 'Investor', avatar: silhouette },
+  { id: 'suspectB', name: 'Vineet', role: 'Ex-boyfriend', avatar: silhouette },
+  { id: 'suspectC', name: 'Manvitha', role: 'Best friend', avatar: silhouette },
+  { id: 'suspectD', name: 'Anuprabh', role: 'DJ', avatar: silhouette },
+  { id: 'suspectE', name: 'Akshara', role: 'Lead investigator', avatar: silhouette },
 ]
 
 function App() {
