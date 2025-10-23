@@ -138,8 +138,8 @@
   position: relative;
   z-index: 5;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 3rem 2rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem 1rem;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 1rem;
@@ -149,7 +149,7 @@
 .polaroid {
   position: relative;
   width: 100%;
-  max-width: 320px;
+  max-width: 250px;
   margin: 0 auto;
   cursor: pointer;
   transform: rotate(var(--rotation, 0deg)) translateY(20px);
@@ -363,33 +363,7 @@
   transform: translateX(-50%) rotate(3deg);
 }
 
-/* Red string connections */
-.string-connections {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.3;
-}
 
-.red-string {
-  stroke: #d90429;
-  stroke-width: 2;
-  stroke-dasharray: 5, 5;
-  filter: drop-shadow(0 0 4px rgba(217, 4, 41, 0.4));
-  animation: stringPulse 3s ease-in-out infinite;
-}
-
-@keyframes stringPulse {
-  0%, 100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
 
 /* Responsive design */
 @media (max-width: 768px) {

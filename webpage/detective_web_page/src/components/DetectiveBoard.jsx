@@ -85,13 +85,6 @@ function DetectiveBoard({ suspects, onSelectSuspect, onBack }) {
           )
         })}
       </div>
-
-      {/* Red string connections (decorative) */}
-      <svg className="string-connections" xmlns="http://www.w3.org/2000/svg">
-        <line x1="20%" y1="30%" x2="50%" y2="45%" className="red-string" />
-        <line x1="50%" y1="45%" x2="80%" y2="35%" className="red-string" />
-        <line x1="30%" y1="60%" x2="70%" y2="70%" className="red-string" />
-      </svg>
     </div>
   )
 }
