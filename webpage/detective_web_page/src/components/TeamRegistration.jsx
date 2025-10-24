@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './TeamRegistration.css';
+import { registerTeam } from '../lib/api';
 
 export default function TeamRegistration({ onTeamRegistered }) {
   const [members, setMembers] = useState([{ name: '', rollNo: '' }]);
@@ -39,18 +40,7 @@ export default function TeamRegistration({ onTeamRegistered }) {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost:5000/register-team', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ members })
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Registration failed');
-      }
-
-      const data = await response.json();
+      const data = await registerTeam(members);
       
       // Store teamId in localStorage
       localStorage.setItem('teamId', data.teamId);
