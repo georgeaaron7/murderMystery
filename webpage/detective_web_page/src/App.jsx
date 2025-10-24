@@ -3,6 +3,7 @@ import './App.css'
 import silhouette from './assets/suspects/silhouette.svg'
 import vineetImg from './assets/suspects/vineet.jpg'
 import manvithaImg from './assets/suspects/manvitha.jpg'
+import srishanthImg from './assets/suspects/srishanth.jpg'
 import jeetImg from './assets/suspects/jeet.jpg'
 import shreeyaImg from './assets/suspects/shreeya.jpg'
 import { io } from 'socket.io-client'
@@ -13,7 +14,7 @@ import ChatWindow from './components/ChatWindow'
 
 // Local fallback suspects in case backend is down
 const FALLBACK_SUSPECTS = [
-  { id: 'suspectA', name: 'Srishanth', role: 'Investor', avatar: silhouette },
+  { id: 'suspectA', name: 'Srishanth', role: 'Investor', avatar: srishanthImg },
   { id: 'suspectB', name: 'Vineet', role: 'Ex-boyfriend', avatar: vineetImg },
   { id: 'suspectC', name: 'Manvitha', role: 'Best friend', avatar: manvithaImg },
   { id: 'suspectD', name: 'Jeet', role: 'DJ', avatar: jeetImg },
