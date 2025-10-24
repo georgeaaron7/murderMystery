@@ -5,7 +5,7 @@ function LandingPage({ onStart }) {
   const [displayedText, setDisplayedText] = useState('')
   const [showButton, setShowButton] = useState(false)
   
-  const storyText = "A murder most foul has occurred at the grand estate. The victim: a prominent socialite. The suspects: those closest to her. As the lead detective, you must interrogate each suspect, uncover their secrets, and piece together the truth. Time is running out. The killer walks among them..."
+  const storyText = "A chilling discovery at an alumni reunion: event planner Riya is found dead in the farmhouse library. Handwritten notes, corrupted memos, and shifting timelines blur the truth. Behind every confession lies a fabrication. Untangle the lies, confront those who knew her, and decide what really happened before the storm ended..."
 
   useEffect(() => {
     let currentIndex = 0
@@ -28,8 +28,8 @@ function LandingPage({ onStart }) {
       <div className="landing-content">
         <div className="landing-header">
           <h1 className="landing-title">
-            <span className="title-line">The Last</span>
-            <span className="title-line title-emphasis">Confession</span>
+            <span className="title-line">Between The</span>
+            <span className="title-line title-emphasis">Lines</span>
           </h1>
           <div className="title-divider"></div>
         </div>
