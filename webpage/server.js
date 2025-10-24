@@ -12,7 +12,15 @@ const storage = require('./file-storage');
 storage.initializeStorage();
 
 const app = express();
-app.use(cors());
+
+// Enhanced CORS configuration for ngrok and Firefox
+app.use(cors({
+	origin: '*',
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning', 'User-Agent'],
+	credentials: false
+}));
+
 app.use(express.json());
 
 // Serve static frontend
