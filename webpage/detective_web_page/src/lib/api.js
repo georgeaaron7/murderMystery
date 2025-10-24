@@ -1,5 +1,5 @@
 // Centralized API configuration for the frontend
-export const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'https://nonarbitrable-subparallel-jessika.ngrok-free.dev'
+export const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'http://218.50.74.140:5000'
 
 // Helper function to add ngrok bypass headers
 const fetchWithNgrokBypass = (url, options = {}) => {
