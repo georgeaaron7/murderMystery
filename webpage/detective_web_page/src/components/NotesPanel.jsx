@@ -22,18 +22,18 @@ function useDebounce(value, delay) {
 // LocalStorage fallback helpers
 const LS_PREFIX = 'notes_fallback:'
 
-function saveToLocalStorage(participantId, suspectId, notes, connections) {
+function saveToLocalStorage(teamId, suspectId, notes, connections) {
   try {
-    const key = `${LS_PREFIX}${participantId}_${suspectId}`
+    const key = `${LS_PREFIX}${teamId}_${suspectId}`
     localStorage.setItem(key, JSON.stringify({ notes, connections }))
   } catch (err) {
     console.error('LocalStorage save failed:', err)
   }
 }
 
-function loadFromLocalStorage(participantId, suspectId) {
+function loadFromLocalStorage(teamId, suspectId) {
   try {
-    const key = `${LS_PREFIX}${participantId}_${suspectId}`
+    const key = `${LS_PREFIX}${teamId}_${suspectId}`
     const data = localStorage.getItem(key)
     return data ? JSON.parse(data) : null
   } catch (err) {
@@ -42,7 +42,7 @@ function loadFromLocalStorage(participantId, suspectId) {
   }
 }
 
-export default function NotesPanel({ participantId, suspectId }) {
+export default function NotesPanel({ teamId, suspectId }) {
   const [notes, setNotes] = useState([])
   const [connections, setConnections] = useState([]) // [{id,a,b}]
   const [linkMode, setLinkMode] = useState(false)
@@ -52,12 +52,12 @@ export default function NotesPanel({ participantId, suspectId }) {
   const gridRef = useRef(null)
   const [ribbons, setRibbons] = useState({ width: 0, height: 0, lines: [] })
 
-  // Load notes from backend when participant or suspect changes
+  // Load notes from backend when team or suspect changes
   useEffect(() => {
-    if (!participantId || !suspectId) return
+    if (!teamId || !suspectId) return
     
     setLoading(true)
-    fetch(endpoints.notes(participantId, suspectId))
+    fetch(endpoints.notes(teamId, suspectId))
       .then(r => r.ok ? r.json() : Promise.reject(new Error('Failed to fetch notes')))
       .then(data => {
         setNotes(data.notes || [])
@@ -68,7 +68,7 @@ export default function NotesPanel({ participantId, suspectId }) {
       .catch(err => {
         console.error('⚠️ Backend unavailable, loading from localStorage:', err)
         // Fallback to localStorage if backend is down
-        const localData = loadFromLocalStorage(participantId, suspectId)
+        const localData = loadFromLocalStorage(teamId, suspectId)
         if (localData) {
           setNotes(localData.notes || [])
           setConnections(localData.connections || [])
@@ -80,7 +80,7 @@ export default function NotesPanel({ participantId, suspectId }) {
         setLinkFrom(null)
       })
       .finally(() => setLoading(false))
-  }, [participantId, suspectId])
+  }, [teamId, suspectId])
 
   // Debounced notes and connections for auto-save
   const debouncedNotes = useDebounce(notes, 1000)
@@ -92,7 +92,7 @@ export default function NotesPanel({ participantId, suspectId }) {
   // Auto-save to backend when notes or connections change
   useEffect(() => {
     // Don't save during initial load or if still loading
-    if (!participantId || !suspectId || loading) return
+    if (!teamId || !suspectId || loading) return
     
     // Skip first render after loading (initial data from backend)
     if (!hasLoadedRef.current) {
@@ -103,14 +103,14 @@ export default function NotesPanel({ participantId, suspectId }) {
     setSaving(true)
     
     // Always save to localStorage as backup
-    saveToLocalStorage(participantId, suspectId, debouncedNotes, debouncedConnections)
+    saveToLocalStorage(teamId, suspectId, debouncedNotes, debouncedConnections)
     
     // Try to save to backend
     fetch(endpoints.saveNotes(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        participantId,
+        teamId,
         suspectId,
         notes: debouncedNotes,
         connections: debouncedConnections
@@ -124,12 +124,12 @@ export default function NotesPanel({ participantId, suspectId }) {
         console.warn('⚠️ Backend save failed, using localStorage only:', err.message)
       })
       .finally(() => setSaving(false))
-  }, [participantId, suspectId, debouncedNotes, debouncedConnections, loading])
+  }, [teamId, suspectId, debouncedNotes, debouncedConnections, loading])
   
-  // Reset hasLoadedRef when participant or suspect changes
+  // Reset hasLoadedRef when team or suspect changes
   useEffect(() => {
     hasLoadedRef.current = false
-  }, [participantId, suspectId])
+  }, [teamId, suspectId])
 
   const addNote = () => setNotes(prev => [createNote(), ...prev])
   const updateNote = (id, text) => setNotes(prev => prev.map(n => n.id === id ? { ...n, text } : n))

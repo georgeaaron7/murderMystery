@@ -9,7 +9,7 @@ function ChatWindow({
   setInput, 
   onSend, 
   onBack,
-  participantId,
+  teamId,
   suspectId 
 }) {
   const [notesOpen, setNotesOpen] = useState(false)
@@ -122,7 +122,7 @@ function ChatWindow({
               <button className="modal-close" onClick={() => setNotesOpen(false)}>✕</button>
             </div>
             <div className="modal-body">
-              <NotesPanel participantId={participantId} suspectId={suspectId} />
+              <NotesPanel teamId={teamId} suspectId={suspectId} />
             </div>
           </div>
         </div>

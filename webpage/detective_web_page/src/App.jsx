@@ -8,6 +8,7 @@ import jeetImg from './assets/suspects/jeet.jpg'
 import shreeyaImg from './assets/suspects/shreeya.jpg'
 import { io } from 'socket.io-client'
 import { API_BASE, endpoints } from './lib/api'
+import TeamRegistration from './components/TeamRegistration'
 import LandingPage from './components/LandingPage'
 import DetectiveBoard from './components/DetectiveBoard'
 import ChatWindow from './components/ChatWindow'
@@ -22,28 +23,28 @@ const FALLBACK_SUSPECTS = [
 ]
 
 function App() {
-  // View state: 'landing', 'board', 'chat'
-  // Persist view but check if user has seen landing page
+  // Team identity persisted across refreshes
+  const [teamId, setTeamId] = useState(() => {
+    return localStorage.getItem('teamId') || null
+  })
+
+  // View state: 'registration', 'landing', 'board', 'chat'
   const [currentView, setCurrentView] = useState(() => {
+    // If no team ID, must register first
+    if (!teamId) {
+      return 'registration'
+    }
+    
     const hasSeenLanding = localStorage.getItem('hasSeenLanding')
     const savedView = localStorage.getItem('currentView')
     
-    // First time visitor - show landing
+    // First time visitor with team - show landing
     if (!hasSeenLanding) {
       return 'landing'
     }
     
     // Returning visitor - restore last view (or default to board)
     return savedView || 'board'
-  })
-
-  // Participant identity persisted across refreshes
-  const [participantId] = useState(() => {
-    const existing = typeof window !== 'undefined' ? localStorage.getItem('participantId') : null
-    if (existing) return existing
-    const id = `p_${Math.random().toString(36).slice(2, 10)}`
-    try { localStorage.setItem('participantId', id) } catch {}
-    return id
   })
 
   // Suspects from backend
@@ -68,7 +69,15 @@ function App() {
       .then(r => r.ok ? r.json() : Promise.reject(new Error('Failed to fetch suspects')))
       .then(list => {
         if (stale || !Array.isArray(list) || !list.length) return
-        const mapped = list.map(s => ({ ...s, role: s.role || 'Suspect', avatar: silhouette }))
+        // Map backend suspects with correct avatars from FALLBACK_SUSPECTS
+        const mapped = list.map(s => {
+          const fallback = FALLBACK_SUSPECTS.find(f => f.id === s.id)
+          return { 
+            ...s, 
+            role: s.role || fallback?.role || 'Suspect', 
+            avatar: fallback?.avatar || silhouette 
+          }
+        })
         setSuspects(mapped)
         // Ensure selected suspect is valid in the fetched list
         const exists = mapped.some(s => s.id === selected)
@@ -98,9 +107,9 @@ function App() {
 
   // Fetch history when selected suspect changes
   useEffect(() => {
-    if (!selected) return
+    if (!selected || !teamId) return
     let stale = false
-    fetch(endpoints.history(participantId, selected))
+    fetch(endpoints.history(teamId, selected))
       .then(r => r.ok ? r.json() : Promise.reject(new Error('Failed to fetch history')))
       .then(data => {
         if (stale) return
@@ -109,33 +118,40 @@ function App() {
       })
       .catch(() => setMessages([]))
     return () => { stale = true }
-  }, [participantId, selected])
+  }, [teamId, selected])
 
   // Setup socket once
   useEffect(() => {
+    if (!teamId) return
+    
     const socket = io(API_BASE, { transports: ['websocket'] })
     socketRef.current = socket
 
     // Handle incoming responses
-    socket.on('chatResponse', ({ suspectId, message, participantId: pid }) => {
-      // Only append if for the current selected suspect and this participant (or broadcast without pid)
-      if (suspectId === selected && (!pid || pid === participantId)) {
+    socket.on('chatResponse', ({ suspectId, message, teamId: tid }) => {
+      // Only append if for the current selected suspect and this team (or broadcast without tid)
+      if (suspectId === selected && (!tid || tid === teamId)) {
         setMessages(prev => [...prev, { who: 'ai', text: message }])
       }
     })
 
     return () => { socket.disconnect() }
-  }, [participantId, selected])
+  }, [teamId, selected])
+
+  const handleTeamRegistered = (newTeamId, members) => {
+    setTeamId(newTeamId)
+    setCurrentView('landing')
+  }
 
   const handleSend = () => {
     const text = input.trim()
-    if (!text || !selected || !socketRef.current) return
+    if (!text || !selected || !socketRef.current || !teamId) return
     // Optimistic UI
     setMessages(prev => [...prev, { who: 'user', text }])
     setInput('')
     // Emit to backend; backend will save and reply (agent or fallback)
     socketRef.current.emit('chatMessage', {
-      participantId,
+      teamId,
       suspectId: selected,
       message: text,
     })
@@ -159,6 +175,10 @@ function App() {
   }
   
   // Render based on current view
+  if (currentView === 'registration') {
+    return <TeamRegistration onTeamRegistered={handleTeamRegistered} />
+  }
+
   if (currentView === 'landing') {
     return <LandingPage onStart={handleStartInvestigation} />
   }
@@ -182,7 +202,7 @@ function App() {
         setInput={setInput}
         onSend={handleSend}
         onBack={handleBackToBoard}
-        participantId={participantId}
+        teamId={teamId}
         suspectId={selected}
       />
     )

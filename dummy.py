@@ -2,7 +2,7 @@ import requests
 import json
 
 # vLLM endpoint URL
-URL = "http://198.53.64.194:40610/v1/completions"
+URL = "http://198.53.64.194:40538/v1/completions"
 
 # Build the payload
 payload = {
