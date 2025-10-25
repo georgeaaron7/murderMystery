@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import './ChatWindow.css'
 import NotesPanel from './NotesPanel'
+import EvidencePanel from './EvidencePanel'
+import EvidenceModal from './EvidenceModal'
 
 function ChatWindow({ 
   suspect, 
@@ -10,9 +12,12 @@ function ChatWindow({
   onSend, 
   onBack,
   teamId,
-  suspectId 
+  suspectId,
+  unlockedEvidence = []
 }) {
   const [notesOpen, setNotesOpen] = useState(false)
+  const [evidenceOpen, setEvidenceOpen] = useState(false)
+  const [selectedEvidence, setSelectedEvidence] = useState(null)
   const messagesEndRef = useRef(null)
   const chatWindowRef = useRef(null)
 
@@ -37,6 +42,11 @@ function ChatWindow({
     }
   }
 
+  const handleViewEvidence = (evidence) => {
+    setSelectedEvidence(evidence)
+    setEvidenceOpen(false) // Close evidence panel modal
+  }
+
   return (
     <div className="chat-container">
       <div className="chat-slide-in">
@@ -58,6 +68,17 @@ function ChatWindow({
 
           <button className="notes-btn-new" onClick={() => setNotesOpen(true)}>
             📝 Notes
+          </button>
+
+          <button 
+            className="evidence-btn-new" 
+            onClick={() => setEvidenceOpen(true)}
+            title="View Evidence"
+          >
+            🔍 Evidence
+            {unlockedEvidence.length > 0 && (
+              <span className="evidence-badge">{unlockedEvidence.length}</span>
+            )}
           </button>
         </header>
 
@@ -126,6 +147,32 @@ function ChatWindow({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Evidence Panel Modal */}
+      {evidenceOpen && (
+        <div className="modal-backdrop" onClick={() => setEvidenceOpen(false)}>
+          <div className="modal-window" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <div className="modal-title">🔍 Evidence Board</div>
+              <button className="modal-close" onClick={() => setEvidenceOpen(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <EvidencePanel 
+                unlockedEvidence={unlockedEvidence} 
+                onViewEvidence={handleViewEvidence}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Evidence Detail Modal */}
+      {selectedEvidence && (
+        <EvidenceModal 
+          evidence={selectedEvidence} 
+          onClose={() => setSelectedEvidence(null)} 
+        />
       )}
     </div>
   )

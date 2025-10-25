@@ -1,0 +1,54 @@
+.evidence-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
+  z-index: 10000;
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.evidence-notification.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.evidence-notif-icon {
+  font-size: 32px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.evidence-notif-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.evidence-notif-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.evidence-notif-subtitle {
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}

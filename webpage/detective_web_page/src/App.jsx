@@ -12,6 +12,8 @@ import TeamRegistration from './components/TeamRegistration'
 import LandingPage from './components/LandingPage'
 import DetectiveBoard from './components/DetectiveBoard'
 import ChatWindow from './components/ChatWindow'
+import EvidenceNotification from './components/EvidenceNotification'
+import { evidenceData } from './dataA/evidenceConfig'
 
 // Local fallback suspects in case backend is down
 const FALLBACK_SUSPECTS = [
@@ -58,6 +60,14 @@ function App() {
   // Messages are [{ who: 'user'|'ai', text: string }]
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
+
+  // Evidence system
+  const [unlockedEvidence, setUnlockedEvidence] = useState(() => {
+    if (!teamId) return []
+    const saved = localStorage.getItem(`evidence_${teamId}`)
+    return saved ? JSON.parse(saved) : []
+  })
+  const [pendingNotification, setPendingNotification] = useState(null)
 
   // Socket.io
   const socketRef = useRef(null)
@@ -138,6 +148,49 @@ function App() {
     return () => { socket.disconnect() }
   }, [teamId, selected])
 
+  // Persist unlocked evidence to localStorage
+  useEffect(() => {
+    if (teamId && unlockedEvidence.length > 0) {
+      try {
+        localStorage.setItem(`evidence_${teamId}`, JSON.stringify(unlockedEvidence))
+      } catch {}
+    }
+  }, [unlockedEvidence, teamId])
+
+  // Check for evidence unlocking based on message content
+  const checkForEvidenceUnlock = (messageText) => {
+    if (!messageText) return
+
+    const lowerMessage = messageText.toLowerCase()
+    
+    // Special "greenwich" keyword unlocks all evidence
+    if (lowerMessage.includes('greenwich')) {
+      const allEvidence = evidenceData.filter(e => !unlockedEvidence.find(u => u.id === e.id))
+      if (allEvidence.length > 0) {
+        setUnlockedEvidence(prev => [...prev, ...allEvidence])
+        setPendingNotification(allEvidence[0]) // Show first one as notification
+      }
+      return
+    }
+
+    // Check each evidence for keyword matches
+    for (const evidence of evidenceData) {
+      // Skip if already unlocked
+      if (unlockedEvidence.find(e => e.id === evidence.id)) continue
+
+      // Check if any keyword matches
+      const matched = evidence.keywords.some(keyword => 
+        lowerMessage.includes(keyword.toLowerCase())
+      )
+
+      if (matched) {
+        setUnlockedEvidence(prev => [...prev, evidence])
+        setPendingNotification(evidence)
+        break // Only unlock one evidence per message
+      }
+    }
+  }
+
   const handleTeamRegistered = (newTeamId, members) => {
     setTeamId(newTeamId)
     setCurrentView('landing')
@@ -146,6 +199,10 @@ function App() {
   const handleSend = () => {
     const text = input.trim()
     if (!text || !selected || !socketRef.current || !teamId) return
+    
+    // Check for evidence unlock before sending
+    checkForEvidenceUnlock(text)
+    
     // Optimistic UI
     setMessages(prev => [...prev, { who: 'user', text }])
     setInput('')
@@ -195,16 +252,25 @@ function App() {
 
   if (currentView === 'chat') {
     return (
-      <ChatWindow
-        suspect={suspect}
-        messages={messages}
-        input={input}
-        setInput={setInput}
-        onSend={handleSend}
-        onBack={handleBackToBoard}
-        teamId={teamId}
-        suspectId={selected}
-      />
+      <>
+        <ChatWindow
+          suspect={suspect}
+          messages={messages}
+          input={input}
+          setInput={setInput}
+          onSend={handleSend}
+          onBack={handleBackToBoard}
+          teamId={teamId}
+          suspectId={selected}
+          unlockedEvidence={unlockedEvidence}
+        />
+        {pendingNotification && (
+          <EvidenceNotification 
+            evidence={pendingNotification} 
+            onClose={() => setPendingNotification(null)} 
+          />
+        )}
+      </>
     )
   }
 

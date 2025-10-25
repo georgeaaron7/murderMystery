@@ -1,0 +1,131 @@
+.evidence-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.evidence-modal-window {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+  border: 2px solid #ffd700;
+  border-radius: 16px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.2);
+  animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.evidence-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.evidence-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffd700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.evidence-icon {
+  font-size: 24px;
+}
+
+.evidence-modal-close {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.evidence-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffd700;
+}
+
+.evidence-modal-body {
+  padding: 24px;
+  overflow: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.evidence-image {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.evidence-audio-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.evidence-audio {
+  width: 100%;
+  max-width: 500px;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+.evidence-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255, 215, 0, 0.3);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.evidence-id {
+  font-size: 12px;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: scale(0.9) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
