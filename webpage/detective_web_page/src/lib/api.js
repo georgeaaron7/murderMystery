@@ -1,5 +1,5 @@
 // Centralized API configuration for the frontend
-export const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'https://hints-consistently-insert-modified.trycloudflare.com'
+export const API_BASE = import.meta.env.VITE_API_URL?.replace(/\/$/, '') || 'https://across-genuine-lending-henry.trycloudflare.com/'
 
 // Helper function to add ngrok bypass headers
 const fetchWithNgrokBypass = (url, options = {}) => {
